@@ -126,52 +126,6 @@ You can use the following values to change the settings of the server on boot.
 | JVM_ARGS               |                      | Custom JVM arguments (optional)                                                       |
 | DOWNLOAD_ON_START      | true                 | Automatically download/update server files on startup                                 |
 
-## Server Authentication
-
-Hytale servers support two authentication modes: `authenticated` and `offline`.
-
-### Authenticated Mode (Default - Recommended)
-
-The server uses interactive OAuth authentication via your browser
-   AUTH_MODE=authenticated
-   # Leave SESSION_TOKEN, IDENTITY_TOKEN, OWNER_UUID empty
-   ```
-
-2. **Start your container:**
-   ```bash
-   docker-compose up -d
-   ```
-
-3. **Check the logs for the OAuth URL:**
-   ```bash
-   docker-compose logs -f
-   ```
-
-4. **Authenticate:**
-   - Look for output like: `Please visit: https://oauth.accounts.hytale.com/oauth2/device/verify?user_code=XXXXXX`
-   - Open the URL in your browser
-   - Log in with your Hytale account
-   - Server will automatically continue once authenticated
-
----
-
-### Offline Mode
-
-For testing and development only.
-
-```bash
-# Set in .env
-AUTH_MODE=offline
-
-# Start server
-docker-compose up -d
-```
-
-> [!WARNING]
-> Offline mode is for local testing only. Do not use for public servers.
-
----
-
 ## Port Configuration
 
 Hytale uses the **QUIC protocol over UDP** (not TCP). Make sure to:
@@ -251,7 +205,6 @@ docker-compose restart
 
 - [Official Hytale Server Manual](https://support.hytale.com/hc/en-us/articles/45326769420827-Hytale-Server-Manual)
 - [GitHub Issues](https://github.com/indifferentbroccoli/hytale-server-docker/issues)
-- [IndifferentBroccoli Hosting](https://indifferentbroccoli.com/hytale-server-hosting)
 
 
 ## License
