@@ -91,9 +91,9 @@ if [ "${ACCEPT_EARLY_PLUGINS}" = "true" ]; then
     STARTUP_CMD="${STARTUP_CMD} --accept-early-plugins"
 fi
 
-if [ "${ENABLE_BACKUPS}" = "true" ]; then --backup-dir ${BACKUP_DIR}"
+if [ "${ENABLE_BACKUPS}" = "true" ]; then
+    STARTUP_CMD="${STARTUP_CMD} --backup --backup-dir $BACKUP_DIR --backup-frequency $BACKUP_FREQUENCY"
     LogInfo "Automatic backups enabled (every ${BACKUP_FREQUENCY} minutes to ${BACKUP_DIR})"
-    LogInfo "Automatic backups enabled (every ${BACKUP_FREQUENCY} minutes)"
 fi
 
 LogInfo "Starting Hytale server..."
