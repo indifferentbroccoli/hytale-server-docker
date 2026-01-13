@@ -47,6 +47,8 @@ RUN mkdir -p /home/hytale/server-files && \
     chmod +x /home/hytale/server/*.sh && \
     chown -R 1000:1000 /home/hytale
 
+USER hytale
+
 WORKDIR /home/hytale/server
 
 # Health check to ensure the server is running
