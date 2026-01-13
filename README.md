@@ -3,7 +3,7 @@
 [![GitHub License](https://img.shields.io/github/license/indifferentbroccoli/hytale-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/hytale-server-docker/blob/main/LICENSE)
 [![GitHub Release](https://img.shields.io/github/v/release/indifferentbroccoli/hytale-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/hytale-server-docker/releases)
 [![GitHub Repo stars](https://img.shields.io/github/stars/indifferentbroccoli/hytale-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/hytale-server-docker)
-[![Discord](https://img.shields.io/discord/798321161082896395?style=for-the-badge&label=Discord&labelColor=5865F2)](https://discord.gg/indifferentbroccoli)
+[![Discord](https://img.shields.io/discord/798321161082896395?style=for-the-badge&label=Discord&labelColor=6aa84f)](https://discord.gg/indifferentbroccoli)
 [![Docker Pulls](https://img.shields.io/docker/pulls/indifferentbroccoli/hytale-server-docker?style=for-the-badge&color=6aa84f)](https://hub.docker.com/r/indifferentbroccoli/hytale-server-docker)
 
 Game server hosting
