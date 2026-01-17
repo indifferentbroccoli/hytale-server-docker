@@ -99,25 +99,26 @@ docker run -d \
 
 You can use the following values to change the settings of the server on boot.
 
-| Variable               | Default              | Description                                                                           |
-|------------------------|----------------------|---------------------------------------------------------------------------------------|
-| PUID                   | 1000                 | User ID for file permissions                                                          |
-| PGID                   | 1000                 | Group ID for file permissions                                                         |
-| SERVER_NAME            | hytale-server-docker | Name of the server                                                                    |
-| DEFAULT_PORT           | 5520                 | The port the server listens on (UDP only)                            |
-| MAX_PLAYERS            | 20                   | Maximum number of players allowed on the server                                       |
-| VIEW_DISTANCE          | 12                   | View distance in chunks (12 chunks = 384 blocks). Higher values require more RAM     |
-| AUTH_MODE              | authenticated        | Authentication mode: `authenticated` or `offline`                                     |
-| ENABLE_BACKUPS         | false                | Enable automatic world backups                                                        |
-| BACKUP_FREQUENCY       | 30                   | Backup interval in minutes (if backups are enabled)                                   |
-| BACKUP_DIR             | /home/hytale/server-files/backups | Directory path for storing backups                              |
-| DISABLE_SENTRY         | true                 | Disable Sentry crash reporting                                                        |
-| USE_AOT_CACHE          | true                 | Use Ahead-of-Time compilation cache for faster startup                                |
-| ACCEPT_EARLY_PLUGINS   | false                | Allow early plugins (may cause stability issues)                                      |
-| MIN_MEMORY             |                      | Minimum JVM heap size (e.g., 4G). Leave unset to omit -Xms flag                      |
-| MAX_MEMORY             | 8G                   | Maximum JVM heap size (e.g., 8G, 8192M)                                               |
-| JVM_ARGS               |                      | Custom JVM arguments (optional)                                                       |
-| DOWNLOAD_ON_START      | true                 | Automatically download/update server files on startup                                 |
+| Variable             | Default                           | Description                                                                      |
+|----------------------|-----------------------------------|----------------------------------------------------------------------------------|
+| PUID                 | 1000                              | User ID for file permissions                                                     |
+| PGID                 | 1000                              | Group ID for file permissions                                                    |
+| SERVER_NAME          | hytale-server-docker              | Name of the server                                                               |
+| DEFAULT_PORT         | 5520                              | The port the server listens on (UDP only)                                        |
+| MAX_PLAYERS          | 20                                | Maximum number of players allowed on the server                                  |
+| VIEW_DISTANCE        | 12                                | View distance in chunks (12 chunks = 384 blocks). Higher values require more RAM |
+| AUTH_MODE            | authenticated                     | Authentication mode: `authenticated` or `offline`                                |
+| ENABLE_BACKUPS       | false                             | Enable automatic world backups                                                   |
+| BACKUP_FREQUENCY     | 30                                | Backup interval in minutes (if backups are enabled)                              |
+| BACKUP_DIR           | /home/hytale/server-files/backups | Directory path for storing backups                                               |
+| DISABLE_SENTRY       | true                              | Disable Sentry crash reporting                                                   |
+| USE_AOT_CACHE        | true                              | Use Ahead-of-Time compilation cache for faster startup                           |
+| ACCEPT_EARLY_PLUGINS | false                             | Allow early plugins (may cause stability issues)                                 |
+| MIN_MEMORY           |                                   | Minimum JVM heap size (e.g., 4G). Leave unset to omit -Xms flag                  |
+| MAX_MEMORY           | 8G                                | Maximum JVM heap size (e.g., 8G, 8192M)                                          |
+| JVM_ARGS             |                                   | Custom JVM arguments (optional)                                                  |
+| DOWNLOAD_ON_START    | true                              | Automatically download/update server files on startup                            |
+| PATCHLINE            | release                           | Selects the patchline for the game (release/pre-release)                         |
 
 ## Port Configuration
 

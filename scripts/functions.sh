@@ -116,7 +116,7 @@ download_server() {
   fi
   
   LogInfo "Downloading server files (this may take a while)..."
-  ./$(basename "$DOWNLOADER_EXEC") -download-path "$SERVER_FILES/game.zip" || {
+  ./$(basename "$DOWNLOADER_EXEC") -download-path "$SERVER_FILES/game.zip" -patchline "$PATCHLINE" || {
     LogError "Failed to download server files"
     return 1
   }

@@ -37,7 +37,8 @@ ENV HOME=/home/hytale \
     DOWNLOAD_ON_START=true \
     SESSION_TOKEN="" \
     IDENTITY_TOKEN="" \
-    OWNER_UUID=""
+    OWNER_UUID="" \
+    PATCHLINE=release
 
 COPY ./scripts /home/hytale/server/
 
