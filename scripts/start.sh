@@ -49,6 +49,9 @@ fi
 # Build the startup command
 STARTUP_CMD="java ${JVM_MEMORY}"
 
+# Add Java 25 CompactObjectHeaders for free memory savings
+STARTUP_CMD="${STARTUP_CMD} -XX:+UseCompactObjectHeaders"
+
 # Add AOT cache if enabled
 if [ "${USE_AOT_CACHE}" = "true" ] && [ -f "${SERVER_FILES}/Server/HytaleServer.aot" ]; then
     STARTUP_CMD="${STARTUP_CMD} -XX:AOTCache=${SERVER_FILES}/Server/HytaleServer.aot"
