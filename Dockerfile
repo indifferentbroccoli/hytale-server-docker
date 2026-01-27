@@ -32,6 +32,7 @@ ENV HOME=/home/hytale \
     VIEW_DISTANCE=12 \
     ENABLE_BACKUPS=false \
     BACKUP_FREQUENCY=30 \
+    BACKUP_MAX_COUNT=5 \
     DISABLE_SENTRY=true \
     USE_AOT_CACHE=true \
     AUTH_MODE=authenticated \

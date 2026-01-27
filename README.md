@@ -111,6 +111,7 @@ You can use the following values to change the settings of the server on boot.
 | AUTH_MODE              | authenticated        | Authentication mode: `authenticated` or `offline`                                     |
 | ENABLE_BACKUPS         | false                | Enable automatic world backups                                                        |
 | BACKUP_FREQUENCY       | 30                   | Backup interval in minutes (if backups are enabled)                                   |
+| BACKUP_MAX_COUNT       | 5                    | How many previous backups to retain                                                   |
 | BACKUP_DIR             | /home/hytale/server-files/backups | Directory path for storing backups                              |
 | DISABLE_SENTRY         | true                 | Disable Sentry crash reporting                                                        |
 | USE_AOT_CACHE          | true                 | Use Ahead-of-Time compilation cache for faster startup                                |

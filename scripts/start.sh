@@ -15,6 +15,7 @@ MAX_PLAYERS="${MAX_PLAYERS:-20}"
 VIEW_DISTANCE="${VIEW_DISTANCE:-12}"
 ENABLE_BACKUPS="${ENABLE_BACKUPS:-false}"
 BACKUP_FREQUENCY="${BACKUP_FREQUENCY:-30}"
+BACKUP_MAX_COUNT="${BACKUP_MAX_COUNT:-5}"
 BACKUP_DIR="${BACKUP_DIR:-/home/hytale/server-files/backups}"
 DISABLE_SENTRY="${DISABLE_SENTRY:-true}"
 USE_AOT_CACHE="${USE_AOT_CACHE:-true}"
@@ -84,8 +85,8 @@ if [ "${ACCEPT_EARLY_PLUGINS}" = "true" ]; then
 fi
 
 if [ "${ENABLE_BACKUPS}" = "true" ]; then
-    STARTUP_CMD="${STARTUP_CMD} --backup --backup-dir $BACKUP_DIR --backup-frequency $BACKUP_FREQUENCY"
-    LogInfo "Automatic backups enabled (every ${BACKUP_FREQUENCY} minutes to ${BACKUP_DIR})"
+    STARTUP_CMD="${STARTUP_CMD} --backup --backup-dir $BACKUP_DIR --backup-frequency $BACKUP_FREQUENCY --backup-max-count $BACKUP_MAX_COUNT"
+    LogInfo "Automatic backups enabled (every ${BACKUP_FREQUENCY} minutes to ${BACKUP_DIR}, retaining up to ${BACKUP_MAX_COUNT})"
 fi
 
 LogInfo "Starting Hytale server..."
