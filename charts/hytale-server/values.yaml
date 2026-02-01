@@ -1,0 +1,67 @@
+# -- define image and tag of the used hytale server
+image:
+  repository: indifferentbroccoli/hytale-server-docker
+  pullPolicy: IfNotPresent
+  tag: ''
+
+# -- replicas of the deployment
+replicas: 1
+
+# -- you can also use NodePort to export
+service:
+  # -- type of the service
+  type: ClusterIP
+  # -- default port is 5520 which should not be changed
+  port: 5520
+
+# -- if you don't have an api gateway controller deployed set this to true otherwise to false
+useHostPort: true
+
+# -- persistent data of the hytale server
+persistence:
+  enabled: true
+  size: 20Gi
+  storageClassName: ''
+  accessMode: ReadWriteOnce
+
+# -- resource management (CPU and memory) of the server
+# -- best practice is to set memory request and limit
+# -- to the same value
+resources:
+  requests:
+    memory: 8Gi
+    cpu: 2000m
+  limits:
+    memory: 8Gi
+    cpu: 4000m
+
+hytaleConfig:
+  PUID: '1000'
+  PGID: '1000'
+  SERVER_NAME: Hytale Server
+  MAX_PLAYERS: '20'
+  VIEW_DISTANCE: '12'
+  AUTH_MODE: authenticated
+  ENABLE_BACKUPS: 'false'
+  ACCEPT_EARLY_PLUGINS: 'false'
+  DOWNLOAD_ON_START: 'true'
+  PATCHLINE: release
+  # MAX_MEMORY: 8G
+  # SEED: "MeinSeed"
+  # GAME_MODE: "survival"
+
+# -- if you have installed a gateway api controller enable this
+gateway:
+  create: false
+  name: 'hytale-gateway'
+  className: ''
+  listenersName: 'udp-listener'
+
+# -- udp route if you have installed a gateway api controller
+udpRoute:
+  enabled: false
+  # -- gateway reference
+  parentRefs:
+    - name: 'hytale-gateway'
+      sectionName: 'udp-listener'
+      namespace: ''

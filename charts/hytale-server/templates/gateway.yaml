@@ -1,0 +1,20 @@
+{{- if .Values.gateway.create }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ include "hytale-server.name" . }}
+  labels: {{- include "hytale-server.labels" . | nindent 4 }}
+spec:
+  gatewayClassName: {{ .Values.gateway.className }}
+  listeners:
+    {{- range .Values.gateway.listeners }}
+    - name: {{ .name }}
+      port:
+      protocol: UDP
+      allowedRoutes:
+        namespaces:
+          from: {{ include "hytale-server.namespace" . }}
+        kinds:
+          - kind: UDPRoute
+    {{- end }}
+{{- end }}
