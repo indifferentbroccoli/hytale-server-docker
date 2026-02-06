@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hytale Server Helm Values",
+  "type": "object",
+  "properties": {
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "description": "Docker image repository"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"],
+          "description": "Image pull policy"
+        },
+        "tag": {
+          "type": "string",
+          "description": "Image tag (leave empty for latest or default)"
+        }
+      }
+    },
+    "replicas": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of replicas for the deployment"
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer"],
+          "description": "Type of the Kubernetes Service"
+        },
+        "port": {
+          "type": "integer",
+          "description": "Service port (Default 5520)"
+        }
+      }
+    },
+    "useHostport": {
+      "type": "boolean",
+      "description": "If true, exposes the container port directly on the node (hostPort)"
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "size": {
+          "type": "string",
+          "pattern": "^[0-9]+(Gi|Mi|Ti)$",
+          "description": "Size of the volume, e.g., 20Gi"
+        },
+        "storageClassName": {
+          "type": ["string", "null"],
+          "description": "Storage Class Name (leave empty for default)"
+        },
+        "accessMode": {
+          "type": "string",
+          "enum": ["ReadWriteOnce", "ReadWriteMany", "ReadOnlyMany"]
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "memory": { "type": "string" },
+            "cpu": { "type": "string" }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "memory": { "type": "string" },
+            "cpu": { "type": "string" }
+          }
+        }
+      }
+    },
+    "hytaleConfig": {
+      "type": "object",
+      "description": "Environment variables for the Hytale server",
+      "properties": {
+        "PUID": { "type": "string" },
+        "PGID": { "type": "string" },
+        "SERVER_NAME": { "type": "string" },
+        "MAX_PLAYERS": { "type": "string" },
+        "VIEW_DISTANCE": { "type": "string" },
+        "AUTH_MODE": { "type": "string", "enum": ["authenticated", "offline"] },
+        "ENABLE_BACKUPS": { "type": "string", "enum": ["true", "false"] },
+        "ACCEPT_EARLY_PLUGINS": { "type": "string", "enum": ["true", "false"] },
+        "DOWNLOAD_ON_START": { "type": "string", "enum": ["true", "false"] },
+        "PATCHLINE": { "type": "string" },
+        "SEED": { "type": "string" },
+        "GAME_MODE": { "type": "string" }
+      }
+    },
+    "gateway": {
+      "type": "object",
+      "properties": {
+        "create": { "type": "boolean" },
+        "name": { "type": "string" },
+        "className": { "type": "string" },
+        "listeners": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "port": { "type": "integer" },
+              "protocol": {
+                "type": "string",
+                "enum": ["UDP", "TCP", "HTTP", "HTTPS", "TLS"]
+              },
+              "namespace": { "type": ["string", "null"] }
+            },
+            "required": ["name", "port", "protocol"]
+          }
+        }
+      }
+    },
+    "udpRoute": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "hostnames": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "parentRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "sectionName": { "type": "string" },
+              "namespace": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

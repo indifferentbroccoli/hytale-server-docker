@@ -1,0 +1,6 @@
+apiVersion: v2
+name: hytale-server
+description: Helm chart for Hytale server (Docker by indifferentbroccoli)
+type: application
+version: 0.1.0
+appVersion: 'v1.0.6'

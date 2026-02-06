@@ -1,0 +1,15 @@
+Congratulations! Your Hyatale server has been successfully deployed.
+
+To access your Hytale server, use the following information:
+
+Service Name: {{ .Release.Name }}-{{ .Chart.Name }}
+Namespace: {{ .Release.Namespace }}
+
+The Hytale server does use the following port:
+- UDP: 5520
+
+After a view seconds check the logs to authenticate the server:
+kubectl logs -n {{ .Release.Namespace }} deployments/{{ include "hytale-server.name" . }}-server
+
+Further information and configuration options can be found in the README of the project:
+https://github.com/indifferentbroccoli/hytale-server-docker
