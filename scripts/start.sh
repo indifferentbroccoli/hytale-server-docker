@@ -2,26 +2,9 @@
 # shellcheck source=scripts/functions.sh
 source "/home/hytale/server/functions.sh"
 
-SERVER_FILES="/home/hytale/server-files"
-
 cd "$SERVER_FILES" || exit
 
 LogAction "Starting Hytale Dedicated Server"
-
-# Set defaults if not provided
-DEFAULT_PORT="${DEFAULT_PORT:-5520}"
-SERVER_NAME="${SERVER_NAME:-hytale-server}"
-MAX_PLAYERS="${MAX_PLAYERS:-20}"
-VIEW_DISTANCE="${VIEW_DISTANCE:-12}"
-ENABLE_BACKUPS="${ENABLE_BACKUPS:-false}"
-BACKUP_FREQUENCY="${BACKUP_FREQUENCY:-30}"
-BACKUP_MAX_COUNT="${BACKUP_MAX_COUNT:-5}"
-BACKUP_DIR="${BACKUP_DIR:-/home/hytale/server-files/backups}"
-DISABLE_SENTRY="${DISABLE_SENTRY:-true}"
-USE_AOT_CACHE="${USE_AOT_CACHE:-true}"
-AUTH_MODE="${AUTH_MODE:-authenticated}"
-ACCEPT_EARLY_PLUGINS="${ACCEPT_EARLY_PLUGINS:-false}"
-MAX_MEMORY="${MAX_MEMORY:-8192}"
 
 # Check if HytaleServer.jar exists
 SERVER_JAR="$SERVER_FILES/Server/HytaleServer.jar"
@@ -91,6 +74,7 @@ fi
 
 LogInfo "Starting Hytale server..."
 
+# TODO: use screen or tmux instead.
 # Create a named pipe for sending commands to the server
 FIFO="/tmp/hytale_input_$$"
 mkfifo "$FIFO"
@@ -105,7 +89,7 @@ exec 3>"$FIFO"
 # Monitor logs and send auth command when ready
 (
     sleep 5
-    LOG_FILE=$(ls -t /home/hytale/server-files/logs/*_server.log 2>/dev/null | head -1)
+    LOG_FILE=$(ls -t ${SERVER_FILES}/logs/*_server.log 2>/dev/null | head -1)
     if [ -n "$LOG_FILE" ]; then
         tail -f "$LOG_FILE" | while read -r line; do
             if echo "$line" | grep -q "Hytale Server Booted!"; then

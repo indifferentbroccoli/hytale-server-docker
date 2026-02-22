@@ -1,0 +1,2 @@
+## Ensure Force all files Linux-friendly to LF line endings even when edited on Windows
+* text=auto eol=lf

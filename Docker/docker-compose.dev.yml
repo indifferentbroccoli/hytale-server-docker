@@ -2,22 +2,21 @@
 services:
   hytale:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
     image: indifferentbroccoli/hytale-server-docker
     restart: unless-stopped
     container_name: hytale
-    stop_grace_period: 30s
     ports:
       - 5520:5520/udp
     # Optional runtime overrides (image has built-in defaults)
     env_file:
-      - path: .env
+      - path: ../.env.example
         required: false
     # those are only neccessary for defaults, overriden by .env file
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - PUID=${PUID} 
+      - PGID=${PGID} 
       - SERVER_NAME=${SERVER_NAME:-hytale-server-docker}
       - DEFAULT_PORT=${DEFAULT_PORT:-5520}
       - MAX_PLAYERS=${MAX_PLAYERS:-20}
@@ -34,7 +33,13 @@ services:
       - DOWNLOAD_ON_START=${DOWNLOAD_ON_START:-true}
       - PATCHLINE=${PATCHLINE:-release}
     volumes:
-      - ./server-files:/home/hytale/server-files
+      - ../server-files:/home/hytale/server-files
+      - ../scripts:/home/hytale/server  # use scripts from host dir. # dev only
     stdin_open: true
     tty: true
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+    entrypoint: ["sleep", "infinity"]
     # entrypoint: ["/home/hytale/server/init.sh"]

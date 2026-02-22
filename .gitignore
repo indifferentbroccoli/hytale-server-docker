@@ -1,8 +1,9 @@
 # Environment files with sensitive credentials
-.env
+*.env* 
+!.env.example 
 
 # Server files and data
-server-files/
+server-files*/
 
 # Docker volumes
 *.log
@@ -18,3 +19,9 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+
+# tests
+**/*test     
+test*
+*test*/

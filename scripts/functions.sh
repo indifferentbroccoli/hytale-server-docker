@@ -42,7 +42,9 @@ Log() {
 download_server() {
   LogAction "Checking server version"
   
-  local SERVER_FILES="/home/hytale/server-files"
+  : "${SERVER_FILES:?SERVER_FILES not set}"
+
+  # local SERVER_FILES="/home/hytale/server-files"
   local DOWNLOADER_URL="https://downloader.hytale.com/hytale-downloader.zip"
   local DOWNLOADER_ZIP="$SERVER_FILES/hytale-downloader.zip"
   local DOWNLOADER_DIR="$SERVER_FILES/downloader"
@@ -81,7 +83,7 @@ download_server() {
   local CREDENTIALS_FILE="$DOWNLOADER_DIR/.hytale-downloader-credentials.json"
   local latest_version=""
   local current_version=""
-  local PATCHLINE="${PATCHLINE:-release}"
+  : "${PATCHLINE:?PATCHLINE not set}"
   local DOWNLOADER_BASENAME
   DOWNLOADER_BASENAME="$(basename "$DOWNLOADER_EXEC")"
   
@@ -223,4 +225,90 @@ shutdown_server() {
     fi
     
     return "$return_val"
+}
+
+
+#============================
+# Rootless / permissions logic
+#============================
+# We want `docker compose up` to work without specifying `user:`.
+#
+# - Rootful Docker: container root == host root for bind-mounts. If we stay root,
+#   files created on the host bind mount become owned by root (bad UX). So we
+#   *drop privileges* to match the ownership of $SERVER_FILES (or PUID/PGID if set).
+#
+# - Rootless Docker: container root is mapped to the invoking host user via userns.
+#   In that case, staying as container root results in host-owned files (good),
+#   and attempting to chown a bind mount often fails. So we avoid chown and do
+#   not try to drop privileges.
+
+is_userns_rootless() {
+    # If we have user namespace mappings, we are very likely in rootless mode.
+    # Typical rootless: 0 100000 65536
+    # Rootful often:   0 0 4294967295
+    local map
+    map="$(cat /proc/self/uid_map 2>/dev/null | head -n 1)"
+    if echo "$map" | grep -Eq '^\s*0\s+0\s+'; then
+        return 1
+    fi
+    # If 0 is not mapped to 0, we're in userns.
+    return 0
+}
+
+detect_target_ids() {
+    # Defaults (kept for compatibility with README)
+    PUID="${PUID:-1000}"
+    PGID="${PGID:-1000}"
+
+    # If server-files is a bind mount and exists, prefer its ownership.
+    # But ignore root:root (often happens when Docker auto-creates the host dir).
+    if [ -d "${SERVER_FILES}" ]; then
+        local st_uid st_gid
+        st_uid="$(stat -c '%u' "${SERVER_FILES}" 2>/dev/null || echo "")"
+        st_gid="$(stat -c '%g' "${SERVER_FILES}" 2>/dev/null || echo "")"
+        if [ -n "$st_uid" ] && [ -n "$st_gid" ]; then
+            # If user did not explicitly set PUID/PGID, use the directory ownership.
+            if [ -z "${PUID_EXPLICIT}" ] && [ "$st_uid" != "0" ]; then PUID="$st_uid"; fi
+            if [ -z "${PGID_EXPLICIT}" ] && [ "$st_gid" != "0" ]; then PGID="$st_gid"; fi
+        fi
+    fi
+}
+
+maybe_drop_privileges_and_reexec() {
+    local euid_now
+    euid_now="$(id -u)"
+    if [ "$euid_now" -ne 0 ]; then
+        return 0
+    fi
+
+    if is_userns_rootless; then
+        LogInfo "Detected user namespace mapping (rootless engine). Staying as container root to preserve host ownership."
+        return 0
+    fi
+
+    # Rootful: drop privileges unless we were already asked to run as root.
+    # We support optional explicit PUID/PGID and otherwise follow bind-mount ownership.
+    detect_target_ids
+    LogInfo "Rootful engine detected. Will run server as UID:GID ${PUID}:${PGID} to avoid root-owned host files."
+
+    # Ensure group exists / is correct
+    if getent group "${PGID}" >/dev/null 2>&1; then
+        :
+    else
+        groupadd -g "${PGID}" hytalegrp >/dev/null 2>&1 || true
+    fi
+
+    # Ensure user exists / is correct (getent supports numeric uid lookups)
+    if getent passwd "${PUID}" >/dev/null 2>&1; then
+        :
+    else
+        useradd -u "${PUID}" -g "${PGID}" -m -s /bin/bash hytaleusr >/dev/null 2>&1 || true
+    fi
+
+    # Best-effort permission fixes. These may fail on some bind mounts; don't crash.
+    mkdir -p "${SERVER_FILES}" "${BACKUP_DIR}" 2>/dev/null || true
+    chown -R "${PUID}:${PGID}" "${SERVER_ROOT}" 2>/dev/null || true
+    chown -R "${PUID}:${PGID}" "${SERVER_FILES}" 2>/dev/null || true
+
+    exec gosu "${PUID}:${PGID}" "$0" "$@"
 }
