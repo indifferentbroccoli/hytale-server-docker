@@ -1,0 +1,25 @@
+{{- if .Values.udpRoute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: UDPRoute
+metadata:
+  name: {{ include "hytale-server.name" . }}
+  namespace: {{ include "hytale-server.namespace" . }}
+  labels: {{- include "hytale-server.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+  {{- range .Values.udpRoute.parentRefs }}
+    - name: {{ .name }}
+      {{- if .sectionName }}
+      sectionName: {{ .sectionName }}
+      {{- end }}
+      {{- if .namespace }}
+      namespace: {{ .namespace }}
+      {{- end }}
+  {{- end }}
+  rules:
+    - backendRefs:
+      - name: {{ include "hytale-server.name" . }}
+        port: {{ .Values.service.port }}
+        group: ""
+        kind: Service
+{{- end }}

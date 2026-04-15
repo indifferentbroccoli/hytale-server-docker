@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hytale-server.name" . }}-server
+  namespace: {{ include "hytale-server.namespace" . }}
+  labels: {{- include "hytale-server.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels: {{- include "hytale-server.selectorLabels" . | nindent 8 }}
+  template:
+    metadata:
+      labels: {{- include "hytale-server.labels" . | nindent 10 }}
+    spec:
+      containers:
+        - name: hytale
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          tty: true
+          stdin: true
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              {{- if .Values.useHostPort }}
+              hostPort: {{ .Values.service.port }}
+              {{- end }}
+              protocol: UDP
+          envFrom:
+            - configMapRef:
+                name: {{ include "hytale-server.name" . }}-config
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /home/hytale/server-files
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "hytale-server.name" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

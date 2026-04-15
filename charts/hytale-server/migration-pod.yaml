@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hytale-server-migration
+  namespace: hytale-server
+spec:
+  containers:
+    - name: migration-container
+      image: busybox
+      command: ['/bin/sh', '-c', 'sleep 3600']
+      volumeMounts:
+        - name: hytale-data
+          mountPath: /data
+  volumes:
+    - name: hytale-data
+      persistentVolumeClaim:
+        claimName: hytale-server

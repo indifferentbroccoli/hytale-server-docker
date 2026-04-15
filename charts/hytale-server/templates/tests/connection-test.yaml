@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "hytale-server.name" . }}-test-connection"
+  namespace: {{ include "hytale-server.namespace" . }}
+  labels:
+    {{- include "hytale-server.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  containers:
+    - name: nc
+      image: busybox:1.36
+      command: ['/bin/sh', '-c']
+      args:
+        - |
+          echo "Attempting to connect to UDP service {{ include "hytale-server.name" . }}:{{ .Values.service.port }}..."
+          # The -w flag sets a timeout. -z scans for listening daemons without sending data. -u is for UDP.
+          nc -w 5 -z -u {{ include "hytale-server.name" . }} {{ .Values.service.port }}
+          if [ $? -eq 0 ]; then
+            echo "Success: Service is reachable on UDP port {{ .Values.service.port }}."
+            exit 0
+          else
+            echo "Failure: Could not connect to service on UDP port {{ .Values.service.port }}."
+            exit 1
+          fi
+  restartPolicy: Never
